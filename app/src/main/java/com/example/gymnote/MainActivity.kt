@@ -67,7 +67,6 @@ fun topAppBar(){
                         fontSize = 26.sp)) {
                     append("Note")
                 }
-
             }
         )
     }
