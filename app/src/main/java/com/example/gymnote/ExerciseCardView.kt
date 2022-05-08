@@ -1,4 +1,6 @@
 package com.example.gymnote
+import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -6,6 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowDropDown
@@ -59,8 +62,8 @@ fun ApproacheTemplate(numOfApproache: Int, approache: Approache){
                 placeholder = { Text(text = "Test")},
                 shape = myShape.medium,
                 modifier = Modifier
-                    .width(70.dp)
-                    .height(40.dp),
+                    .width(70.dp),
+                    //.height(40.dp),
                 textStyle = TextStyle(textAlign = TextAlign.Center))
         }
         Column(horizontalAlignment = Alignment.End) { //repeat
@@ -72,14 +75,14 @@ fun ApproacheTemplate(numOfApproache: Int, approache: Approache){
                 placeholder = { Text(text = "69")},
                 onValueChange = { enterS = it},
                 modifier = Modifier
-                    .width(70.dp)
-                    .height(40.dp))
+                    .width(70.dp))
+                //    .height(40.dp))
         }
     }
 }
 
 @Composable
-fun ExerciseCard(exercise: Exercise){ // false - время, true - повторения
+fun ExerciseCard(exercise: Exercise, context: Context){ // false - время, true - повторения
     var isExpanded by remember { mutableStateOf(false) }
     Surface(
         shape = myShape.small,
@@ -127,12 +130,9 @@ fun ExerciseCard(exercise: Exercise){ // false - время, true - повтор
                     color = Color.Gray)
             }
             //Сделать так, чтобы была возможность создания множества Row по входящему списку
-            LazyColumn(modifier = Modifier.padding(start = inSurfacePadding, end = inSurfacePadding)) {
-                var numOfApproache: Int = 1 // fix: start from 4? why?
-                items(exercise.approaches){
-                        approache -> ApproacheTemplate(numOfApproache = numOfApproache,approache = approache)
-                    numOfApproache++
-                }
+            //LazyColumn(modifier = Modifier.padding(start = inSurfacePadding, end = inSurfacePadding)) {
+            for(i in exercise.approaches.indices){
+                ApproacheTemplate(numOfApproache = i + 1, approache = exercise.approaches[i])
             }
             Button(
                 modifier = Modifier
@@ -140,23 +140,31 @@ fun ExerciseCard(exercise: Exercise){ // false - время, true - повтор
                     .padding(surfacePadding)
                     .height(40.dp),
                 shape = myShape.large,
-                onClick = { /*TODO*/ }) {
+                onClick = {
+                    val intent = Intent(context, TrainingActivity::class.java)
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    intent.putExtra("exerciseName", exercise.name)
+                    context.startActivity(intent)
+                }) {
                 Text(text = "Начать")
             }
         }
     }
 }
 
-//Test data
-
-val approaches: List<Approache> = listOf(
-    Approache(80, 12),
-    Approache(120, 10),
-    Approache( 15, 100))
-val exercise = Exercise(name = "Chest press", typeOfExercise = true, approaches = approaches) //Example for data
-
-@Preview(showBackground = true)
 @Composable
-fun ExerciseCardPreview(){
-    ExerciseCard(exercise = exercise)
+fun myForm(enterString: String){
+    var text: String = enterString;
+    BasicTextField(
+        value = text,
+        onValueChange = {newText -> text = newText},
+        Modifier
+            .padding(vertical = 6.dp)
+            .width(64.dp))
+}
+
+@Composable
+@Preview(showBackground = true)
+fun myFormPreview(){
+    myForm(enterString = "Hello")
 }
