@@ -27,7 +27,7 @@ val a: List<Approache> = listOf(
     Approache( 15, 100))
 val e1 = Exercise(name = "Chest press", typeOfExercise = true, approaches = a)
 val e2 = Exercise(name = "Pull-ups", typeOfExercise = true, approaches = a)
-    val e3 = Exercise(name = "Barbell", typeOfExercise = true, approaches = a)
+val e3 = Exercise(name = "Barbell", typeOfExercise = true, approaches = a)
 
 val exercises: List<Exercise> = listOf(e1,e2,e3,e1,e2,e3,e1,e2,e3)
 
@@ -54,10 +54,10 @@ fun topAppBar(){
         Text(
             buildAnnotatedString {
                 withStyle(
-                        style = SpanStyle(
-                            color = Color.Cyan,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 26.sp),) {
+                    style = SpanStyle(
+                        color = Color.Cyan,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 26.sp),) {
                     append("Gym")
                 }
 
