@@ -1,11 +1,29 @@
 package com.example.gymnote
 
 import android.content.res.Configuration
+import android.icu.text.CaseMap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-
+import androidx.activity.compose.setContent
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.compose.material.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,6 +59,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,10 +68,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.graphics.Color.Companion as Color1
 
-
-@Composable
 @Preview
-fun topApptext(){
+@Composable
+fun topApptex(){
     var text by remember { mutableStateOf("") }
     val context = LocalContext.current
     val message = remember{mutableStateOf("")}
@@ -119,7 +137,7 @@ fun topApptext(){
                     message.value,
                     {message.value = it},
                     label = { Text("Название упражнения")},
-                    shape = RoundedCornerShape(30.dp)
+                    shape = RoundedCornerShape(20.dp)
                 )
 
 
@@ -136,19 +154,34 @@ fun topApptext(){
                     {message.value = it},
 
                     label = { Text("#хэштег")},
-                    shape = RoundedCornerShape(30.dp)
+                    shape = RoundedCornerShape(20.dp)
                     )
 
 
             }
             Row(
+
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 10.dp),
+                    .padding(bottom = 10.dp, start = 25.dp, end = 25.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
+                horizontalArrangement = Arrangement.SpaceBetween
             ){
-                Text("Режим", color = Color.Black, fontWeight = FontWeight.Bold)
+                Text("Режим", color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 24.sp)
+                val checkedState = remember {
+                    mutableStateOf(false)
+                }
+
+                Switch(
+                    checked = checkedState.value,
+                    onCheckedChange = {checkedState.value = it},
+                    colors = SwitchDefaults.colors(Color.Cyan)
+                )
+                if(checkedState.value){
+                    Toast.makeText( context,"Approaches", Toast.LENGTH_SHORT).show()
+                }else{
+                    Toast.makeText( context,"Time", Toast.LENGTH_SHORT).show()
+                }
             }
             Row(
                 modifier = Modifier
@@ -164,14 +197,17 @@ fun topApptext(){
                   shape = RoundedCornerShape(20.dp))
               {
                   Row(){
+
                       Image(painter = painterResource(id = R.drawable.bok),
+
                           contentDescription = null,
                           contentScale = ContentScale.Fit,
                           modifier = Modifier
+
                               .size(30.dp)
-                              .padding(end = 5.dp)
+                              .padding(end = 5.dp, top = 8.dp)
                               )
-                      Text("Создать", fontSize = 22.sp)
+                      Text("Создать", fontSize = 26.sp)
                   }
 
               }
@@ -196,9 +232,9 @@ fun topApptext(){
                             contentScale = ContentScale.Fit,
                             modifier = Modifier
                                 .size(30.dp)
-                                .padding(end = 5.dp)
+                                .padding(end = 5.dp,top = 8.dp)
                         )
-                        Text("Создать и начать", fontSize = 22.sp)
+                        Text("Создать и начать", fontSize = 26.sp)
                     }
 
                 }
@@ -207,7 +243,10 @@ fun topApptext(){
             }
         }
     }
+
 }
+
+
 
 
 
