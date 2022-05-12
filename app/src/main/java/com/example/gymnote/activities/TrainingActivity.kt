@@ -1,6 +1,8 @@
-package com.example.gymnote
+package com.example.gymnote.activities
 
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -18,10 +20,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.gymnote.Approache
 import com.example.gymnote.ui.theme.GymNoteTheme
+import com.example.gymnote.ui.theme.SportBlue
 
 class TrainingActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,11 +54,10 @@ fun header(exerciseName: String, context: Context) {
                 text = exerciseName,
                 fontWeight = FontWeight.Black,
                 fontSize = 26.sp,
-                color = Color.Blue
+                color = SportBlue
             )
             IconButton(onClick = {
-                val intent = Intent(context, MainActivity::class.java)
-                context.startActivity(intent)
+                showAlletrDialog(context = context)
             }) {
                 Icon(
                     Icons.Rounded.Close,
@@ -67,9 +69,30 @@ fun header(exerciseName: String, context: Context) {
     }
 }
 
+fun showAlletrDialog(context: Context){
+    val listener = DialogInterface.OnClickListener{_, which ->
+        when(which){
+            DialogInterface.BUTTON_POSITIVE -> {
+                val intent = Intent(context, MainActivity::class.java)
+                context.startActivity(intent)
+            }
+        }
+    }
+
+    val dialog = AlertDialog.Builder(context)
+        .setTitle("Отменить выполнение упражнения?")
+        .setMessage("Все новые записанные результаты будут утеряны")
+        .setPositiveButton("Yes", listener)
+        .create()
+
+    dialog.show()
+}
+
 @Composable
 fun ApproachesList(approaches: List<Approache>){
-    LazyColumn(modifier = Modifier.fillMaxSize().padding(top = 54.dp)){
+    LazyColumn(modifier = Modifier
+        .fillMaxSize()
+        .padding(top = 54.dp)){
 
     }
 }

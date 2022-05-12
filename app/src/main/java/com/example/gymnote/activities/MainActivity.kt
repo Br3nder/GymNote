@@ -1,4 +1,4 @@
-package com.example.gymnote
+package com.example.gymnote.activities
 
 import android.content.Context
 import android.os.Bundle
@@ -7,9 +7,11 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
@@ -19,25 +21,20 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.gymnote.*
 import com.example.gymnote.ui.theme.GymNoteTheme
-
-val a: List<Approache> = listOf(
-    Approache(80, 12),
-    Approache(120, 10),
-    Approache( 15, 100))
-val e1 = Exercise(name = "Chest press", typeOfExercise = true, approaches = a)
-val e2 = Exercise(name = "Pull-ups", typeOfExercise = true, approaches = a)
-val e3 = Exercise(name = "Barbell", typeOfExercise = true, approaches = a)
-
-val exercises: List<Exercise> = listOf(e1,e2,e3,e1,e2,e3,e1,e2,e3)
+import com.example.gymnote.ui.theme.*
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             GymNoteTheme {
-                topAppBar()
-                ExercisesList(exercises = exercises, context = this)
+                val context = this
+                Column() {
+                    topAppBar()
+                    ExercisesList(exercises = exercises, context = context)
+                }
             }
         }
     }
@@ -45,7 +42,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 @Preview
-fun topAppBar(){
+fun topAppBar() {
     TopAppBar(
         contentPadding = PaddingValues(start = 20.dp),
         backgroundColor = Color.White,
@@ -55,16 +52,20 @@ fun topAppBar(){
             buildAnnotatedString {
                 withStyle(
                     style = SpanStyle(
-                        color = Color.Cyan,
+                        color = SportBlue,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 26.sp),) {
+                        fontSize = 26.sp
+                    ),
+                ) {
                     append("Gym")
                 }
 
                 withStyle(
                     style = SpanStyle(
                         fontWeight = FontWeight.Bold,
-                        fontSize = 26.sp)) {
+                        fontSize = 26.sp
+                    )
+                ) {
                     append("Note")
                 }
 
@@ -74,12 +75,35 @@ fun topAppBar(){
 }
 
 @Composable
-fun ExercisesList(exercises: List<Exercise>, context: Context){
-    LazyColumn(modifier = Modifier.fillMaxSize().padding(top = 54.dp)) {
-        items(exercises){ item ->
+fun ExercisesList(exercises: List<Exercise>, context: Context) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        contentPadding = PaddingValues(bottom = 32.dp)
+    ) {
+        items(exercises) { item ->
             ExerciseCard(
                 exercise = item,
-                context = context)
+                context = context
+            )
+        }
+        item {
+            Button(
+                onClick = { /*TODO*/ },
+                modifier = Modifier
+                    .padding(top = 32.dp)
+                    .height(BTN_HEIGHT_SHORT)
+                    .width(BTN_WIDTH_SHORT),
+                shape = Shapes.medium,
+                colors = ButtonDefaults.buttonColors(backgroundColor = SportBlue)
+            ) {
+                Icon(
+                    Icons.Rounded.Add,
+                    contentDescription = "add new exercise",
+                    tint = Color.White
+                )
+            }
         }
     }
 }
