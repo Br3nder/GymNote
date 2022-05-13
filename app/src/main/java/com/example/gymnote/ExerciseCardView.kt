@@ -105,7 +105,7 @@ fun ExerciseCard(exercise: Exercise){ // false - время, true - повтор
             LazyColumn() {
                 var numOfApproache: Int = 1 // fix: start from 4? why?
                 items(exercise.approaches){
-                    approache -> ApproacheTemplate(numOfApproache = numOfApproache,approache = approache)
+                        approache -> ApproacheTemplate(numOfApproache = numOfApproache,approache = approache)
                     numOfApproache++
                 }
             }

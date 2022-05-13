@@ -54,10 +54,10 @@ fun topAppBar(){
         Text(
             buildAnnotatedString {
                 withStyle(
-                    style = SpanStyle(
-                        color = Color.Cyan,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 26.sp),) {
+                        style = SpanStyle(
+                            color = Color.Cyan,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 26.sp),) {
                     append("Gym")
                 }
 
@@ -67,7 +67,6 @@ fun topAppBar(){
                         fontSize = 26.sp)) {
                     append("Note")
                 }
-
             }
         )
     }
