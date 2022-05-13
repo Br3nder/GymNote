@@ -21,10 +21,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextIndent
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.gymnote.activities.TrainingActivity
 import com.example.gymnote.ui.theme.Shapes
+import com.example.gymnote.ui.theme.SportBlue
 
 val inSurfacePadding = 18.dp
 val surfacePadding = 24.dp
@@ -62,7 +64,7 @@ fun ApproacheTemplate(numOfApproache: Int, approache: Approache) {
                 placeholder = { Text(text = "Test") },
                 shape = Shapes.small,
                 modifier = Modifier
-                    .width(70.dp),
+                    .width(70.dp).height(56.dp),
                 textStyle = TextStyle(textAlign = TextAlign.Center)
             )
         }
@@ -99,7 +101,7 @@ fun ExerciseCard(exercise: Exercise, context: Context) { // false - время, 
     ) {
         Column(modifier = Modifier
             .animateContentSize()
-            .height(if (isExpanded) 400.dp else 64.dp)) {
+            .height(if (isExpanded) getCardHeight(exercise.approaches.size) else 64.dp)) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -119,7 +121,6 @@ fun ExerciseCard(exercise: Exercise, context: Context) { // false - время, 
                     contentDescription = "More about exercise"
                 )
             }
-
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -150,7 +151,7 @@ fun ExerciseCard(exercise: Exercise, context: Context) { // false - время, 
                     .fillMaxWidth()
                     .padding(surfacePadding)
                     .height(BTN_HEIGHT_LONG),
-                colors = ButtonDefaults.buttonColors(colorResource(id = R.color.SportBlue)),
+                colors = ButtonDefaults.buttonColors(SportBlue),
                 shape = Shapes.medium,
                 onClick = {
                     val intent = Intent(context, TrainingActivity::class.java)
@@ -167,7 +168,7 @@ fun ExerciseCard(exercise: Exercise, context: Context) { // false - время, 
 
 @Composable
 fun myForm(enterString: String) {
-    var text: String = enterString;
+    var text: String = enterString
     BasicTextField(
         value = text,
         onValueChange = { newText -> text = newText },
@@ -183,6 +184,6 @@ fun myFormPreview() {
     myForm(enterString = "Hello")
 }
 
-fun getCardHeight(){
-    //TODO implement a function to calculate the height of the card contents
+fun getCardHeight(approachCount: Int): Dp {
+    return surfacePadding / 2 * approachCount + (56 * approachCount).dp + inSurfacePadding * 2 + 50.dp + surfacePadding * 2 + BTN_HEIGHT_LONG
 }
