@@ -1,27 +1,36 @@
 package com.example.gymnote
 import android.content.res.Configuration
-import android.util.Log
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowDropDown
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextIndent
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.em
+import androidx.compose.ui.unit.sp
 
 val inSurfacePadding = 18.dp
 val surfacePadding = 24.dp
 
 var enter: Int = 0
 var enterS: String = ""
+
+val myShape = Shapes(
+    small = RoundedCornerShape(percent = 7),
+    medium = RoundedCornerShape(percent = 24),
+    large = RoundedCornerShape(percent = 32))
 
 data class Approache(val weight: Int, val repeats: Int){}
 data class Exercise(val name: String,val typeOfExercise: Boolean,val approaches: List<Approache>){}
@@ -36,7 +45,7 @@ fun ApproacheTemplate(numOfApproache: Int, approache: Approache){
         Column(horizontalAlignment = Alignment.Start) { //Approach
             Text(
                 text = numOfApproache.toString(),
-                fontSize = 4.em,
+                fontSize = 20.sp,
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.width(40.dp))
@@ -44,8 +53,11 @@ fun ApproacheTemplate(numOfApproache: Int, approache: Approache){
         Column(horizontalAlignment = Alignment.CenterHorizontally) { //weight
 
             OutlinedTextField(
-                value = "",
-                onValueChange = { it -> enterS},
+                value = enterS,
+                onValueChange = {},
+                readOnly = true,
+                placeholder = { Text(text = "Test")},
+                shape = myShape.medium,
                 modifier = Modifier
                     .width(70.dp)
                     .height(40.dp),
@@ -53,8 +65,12 @@ fun ApproacheTemplate(numOfApproache: Int, approache: Approache){
         }
         Column(horizontalAlignment = Alignment.End) { //repeat
             OutlinedTextField(
-                value = "",
-                onValueChange = { it -> enterS},
+                value = enterS,
+                textStyle = TextStyle(textIndent = TextIndent(0.sp)),
+                readOnly = true,
+                shape = myShape.medium,
+                placeholder = { Text(text = "69")},
+                onValueChange = { enterS = it},
                 modifier = Modifier
                     .width(70.dp)
                     .height(40.dp))
@@ -64,8 +80,9 @@ fun ApproacheTemplate(numOfApproache: Int, approache: Approache){
 
 @Composable
 fun ExerciseCard(exercise: Exercise){ // false - время, true - повторения
+    var isExpanded by remember { mutableStateOf(false) }
     Surface(
-        shape = MaterialTheme.shapes.medium,
+        shape = myShape.small,
         elevation = 16.dp,
         modifier = Modifier
             .fillMaxWidth()
@@ -74,35 +91,43 @@ fun ExerciseCard(exercise: Exercise){ // false - время, true - повтор
                 end = surfacePadding,
                 top = surfacePadding / 2,
                 bottom = surfacePadding / 2
-            )) {
-        Column(modifier = Modifier.padding(inSurfacePadding)) {
+            )
+            .clickable { isExpanded = !isExpanded }) {
+        Column() {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = inSurfacePadding),
+                    .height(64.dp)
+                    .wrapContentHeight(Alignment.CenterVertically)
+                    .padding(inSurfacePadding),
                 horizontalArrangement = Arrangement.SpaceBetween){ //Шапка
                 Text(
                     text = exercise.name,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 4.em)
+                    fontSize = 20.sp)
                 Icon(
                     Icons.Rounded.ArrowDropDown,
                     contentDescription = "More about exercise")
             }
             Row(modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = inSurfacePadding, end = inSurfacePadding),
+                .padding(start = inSurfacePadding * 2, end = inSurfacePadding * 2),
                 horizontalArrangement = Arrangement.SpaceBetween){ //Контент карточки упражнения
-                Text(text = "Подход")
+                Text(
+                    text = "Подход",
+                    color = Color.Gray
+                )
                 Text(
                     text = "Вес",
-                    textAlign = TextAlign.Center)
+                    textAlign = TextAlign.Center,
+                    color = Color.Gray)
                 Text(
                     text = if(exercise.typeOfExercise) "Повторения" else "Время",
-                    textAlign = TextAlign.End)
+                    textAlign = TextAlign.End,
+                    color = Color.Gray)
             }
             //Сделать так, чтобы была возможность создания множества Row по входящему списку
-            LazyColumn() {
+            LazyColumn(modifier = Modifier.padding(start = inSurfacePadding, end = inSurfacePadding)) {
                 var numOfApproache: Int = 1 // fix: start from 4? why?
                 items(exercise.approaches){
                         approache -> ApproacheTemplate(numOfApproache = numOfApproache,approache = approache)
@@ -112,9 +137,9 @@ fun ExerciseCard(exercise: Exercise){ // false - время, true - повтор
             Button(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = surfacePadding / 2)
+                    .padding(surfacePadding)
                     .height(40.dp),
-                shape = MaterialTheme.shapes.small,
+                shape = myShape.large,
                 onClick = { /*TODO*/ }) {
                 Text(text = "Начать")
             }
@@ -131,11 +156,6 @@ val approaches: List<Approache> = listOf(
 val exercise = Exercise(name = "Chest press", typeOfExercise = true, approaches = approaches) //Example for data
 
 @Preview(showBackground = true)
-@Preview(
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    showBackground = true,
-    name = "Dark Mode"
-)
 @Composable
 fun ExerciseCardPreview(){
     ExerciseCard(exercise = exercise)
