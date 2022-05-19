@@ -42,7 +42,6 @@ import androidx.compose.ui.unit.sp
 import java.nio.file.Files.size
 import java.nio.file.WatchEvent
 import androidx.compose.ui.platform.LocalContext
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.compose.setContent
