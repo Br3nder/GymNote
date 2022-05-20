@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,8 +34,10 @@ class TrainingActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             GymNoteTheme {
-                val exerciseName: String = intent?.extras?.getString("exerciseName").toString()
-                header(exerciseName = exerciseName, context = this)
+               // val exerciseName: String = intent?.extras?.getString("exerciseName").toString()
+               // header(exerciseName = exerciseName, context = this)
+                val Header: String = intent?.extras?.getString("Header").toString()
+                com.example.gymnote.TopAppBar(Header = Header)
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
@@ -83,7 +86,7 @@ class TrainingActivity : ComponentActivity() {
     }
 }
 
-@Composable
+/*@Composable
 fun header(exerciseName: String, context: Context) {
     TopAppBar(
         contentPadding = PaddingValues(start = 20.dp),
@@ -115,6 +118,12 @@ fun header(exerciseName: String, context: Context) {
             }
         }
     }
+}*/
+
+@Composable
+@Preview
+fun headerPrew(){
+    TopAppBar("Ah")
 }
 
 @Composable

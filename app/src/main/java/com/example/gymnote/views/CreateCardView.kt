@@ -1,5 +1,7 @@
 package com.example.gymnote.views
 
+import android.content.Intent
+import android.os.Bundle
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -24,24 +26,60 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalContext
 import android.widget.Toast
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
 import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.TopAppBar
+import androidx.navigation.compose.rememberNavController
+import com.example.gymnote.*
 import com.example.gymnote.R
-import com.example.gymnote.inSurfacePadding
-import com.example.gymnote.surfacePadding
+import com.example.gymnote.activities.ExercisesList
+import com.example.gymnote.activities.TrainingActivity
+
+import com.example.gymnote.ui.theme.GymNoteTheme
+import com.example.gymnote.ui.theme.Shapes
+import com.example.gymnote.ui.theme.SportBlue
 import androidx.compose.ui.graphics.Color.Companion as Color1
-import kotlinx.coroutines.launch
+
+
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+
+            val Header: String = intent?.extras?.getString("Header").toString()
+            com.example.gymnote.TopAppBar(Header = Header)
+            val navController = rememberNavController()
+            GymNoteTheme {
+
+                val context = this
+                Column() {
+                    topApptex()
+                    ExercisesList(exercises = exercises, context = context)
+                }
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+fun tso(){
+    TopAppBar("Создать карточку")
+}
+
 @Preview
 @Composable
 fun topApptex() {
+
     val context = LocalContext.current
     val message = remember { mutableStateOf("") }
 
     Surface(
         shape = MaterialTheme.shapes.medium,
-        elevation = 16.dp,
         modifier = Modifier
             .fillMaxWidth()
             .padding(
@@ -66,39 +104,7 @@ fun topApptex() {
                     ),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    buildAnnotatedString {
-                        withStyle(
-                            style = SpanStyle(
-                                color = Color1.Cyan,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 26.sp
-                            ),
-                        ) {
-                            append("Создать карточку")
-                        }
-                    }
-                )
-                Image(painter = painterResource(id = R.drawable.mas),
-                    contentDescription = null,
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier
-                        .size(18.dp)
-                        .clickable
-                        {
-                            Toast
-                                .makeText(
-                                    context,
-                                    "image clicked",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                        }
-
-                )
-
-
-            }
+            ) {}
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -110,7 +116,7 @@ fun topApptex() {
                     message.value,
                     { message.value = it },
                     label = { Text("Название упражнения") },
-                    shape = RoundedCornerShape(20.dp)
+                    shape = Shapes.large
                 )
 
 
@@ -127,7 +133,7 @@ fun topApptex() {
                     { message.value = it },
 
                     label = { Text("#хэштег") },
-                    shape = RoundedCornerShape(20.dp)
+                    shape = Shapes.large
                 )
 
 
@@ -140,7 +146,7 @@ fun topApptex() {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text("Режим", color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 24.sp)
+                Text("Режим", color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 16.sp )
                 val lock = remember {
                     mutableStateOf(false)
                 }
@@ -164,7 +170,7 @@ fun topApptex() {
                     onClick = {},
                     modifier = Modifier
                         .fillMaxWidth(),
-                    shape = RoundedCornerShape(20.dp)
+                    shape = Shapes.large
                 )
                 {
                     Row() {
@@ -197,7 +203,7 @@ fun topApptex() {
                     onClick = {},
                     modifier = Modifier
                         .fillMaxWidth(),
-                    shape = RoundedCornerShape(20.dp)
+                    shape = Shapes.large
                 )
                 {
                     Row() {
