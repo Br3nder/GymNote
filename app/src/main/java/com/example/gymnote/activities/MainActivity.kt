@@ -1,9 +1,11 @@
 package com.example.gymnote.activities
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -21,15 +23,26 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHost
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.gymnote.*
 import com.example.gymnote.ui.theme.GymNoteTheme
 import com.example.gymnote.ui.theme.*
+import com.example.gymnote.activities.CreateCardViews
+
+
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+
             GymNoteTheme {
+
                 val context = this
                 Column() {
                     topAppBar()
@@ -90,7 +103,11 @@ fun ExercisesList(exercises: List<Exercise>, context: Context) {
         }
         item {
             Button(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    val intent = Intent(context, CreateCardViews::class.java)
+
+                    context.startActivity(intent)
+                     },
                 modifier = Modifier
                     .padding(top = 32.dp)
                     .height(BTN_HEIGHT_SHORT)
@@ -107,3 +124,7 @@ fun ExercisesList(exercises: List<Exercise>, context: Context) {
         }
     }
 }
+
+
+
+

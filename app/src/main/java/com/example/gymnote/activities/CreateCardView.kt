@@ -1,9 +1,8 @@
-package com.example.gymnote.views
+package com.example.gymnote.activities
 
-import android.content.Intent
+import android.content.Context
 import android.os.Bundle
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -19,25 +18,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalContext
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
-import androidx.compose.runtime.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
 import androidx.navigation.compose.rememberNavController
 import com.example.gymnote.*
 import com.example.gymnote.R
 import com.example.gymnote.activities.ExercisesList
-import com.example.gymnote.activities.TrainingActivity
-
 import com.example.gymnote.ui.theme.GymNoteTheme
 import com.example.gymnote.ui.theme.Shapes
 import com.example.gymnote.ui.theme.SportBlue
@@ -45,20 +40,28 @@ import androidx.compose.ui.graphics.Color.Companion as Color1
 
 
 
-class MainActivity : ComponentActivity() {
+class CreateCardViews : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-
-            val Header: String = intent?.extras?.getString("Header").toString()
-            com.example.gymnote.TopAppBar(Header = Header)
-            val navController = rememberNavController()
             GymNoteTheme {
 
                 val context = this
                 Column() {
-                    topApptex()
-                    ExercisesList(exercises = exercises, context = context)
+                    val Header: String = intent?.extras?.getString("Header").toString()
+                    com.example.gymnote.TopAppBar(Header = Header)
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(top = 54.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        contentPadding = PaddingValues(bottom = 32.dp)
+                    ) {
+                        item {
+                            TopAppBar("Создать карточку")
+                            topApptex()
+                        }
+                    }
                 }
             }
         }
@@ -75,7 +78,7 @@ fun tso(){
 @Composable
 fun topApptex() {
 
-    val context = LocalContext.current
+
     val message = remember { mutableStateOf("") }
 
     Surface(

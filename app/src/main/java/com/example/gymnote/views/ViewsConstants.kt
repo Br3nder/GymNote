@@ -21,7 +21,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.gymnote.activities.ExercisesList
-
 import com.example.gymnote.activities.showAlletrDialog
 import com.example.gymnote.activities.topAppBar
 import com.example.gymnote.ui.theme.GymNoteTheme
