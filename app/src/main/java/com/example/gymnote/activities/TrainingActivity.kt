@@ -33,11 +33,9 @@ class TrainingActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val Header: String = intent?.extras?.getString("name").toString()
+            TopAppBar(Header = Header)
             GymNoteTheme {
-               // val exerciseName: String = intent?.extras?.getString("exerciseName").toString()
-               // header(exerciseName = exerciseName, context = this)
-                val Header: String = intent?.extras?.getString("Header").toString()
-                com.example.gymnote.TopAppBar(Header = Header)
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
@@ -46,6 +44,7 @@ class TrainingActivity : ComponentActivity() {
                     contentPadding = PaddingValues(bottom = 32.dp)
                 ) {
                     item {
+
                         approachesTitle()
                     }
                     var i = 1
@@ -83,6 +82,7 @@ class TrainingActivity : ComponentActivity() {
                 }
             }
         }
+
     }
 }
 

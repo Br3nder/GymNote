@@ -27,6 +27,12 @@
             android:label="@string/app_name"
             android:theme="@style/Theme.GymNote">
         </activity>
+        <activity
+            android:name=".activities.CreateCardViews"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.GymNote">
+        </activity>
     </application>
 
 </manifest>

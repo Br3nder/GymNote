@@ -1,6 +1,7 @@
 package com.example.gymnote.activities
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -20,7 +21,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.platform.LocalContext
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -29,6 +29,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.rememberNavController
 import com.example.gymnote.*
 import com.example.gymnote.R
@@ -45,23 +46,13 @@ class CreateCardViews : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             GymNoteTheme {
-
+                val Header: String = intent?.extras?.getString("Header").toString()
+                TopAppBar(Header = Header)
                 val context = this
                 Column() {
-                    val Header: String = intent?.extras?.getString("Header").toString()
-                    com.example.gymnote.TopAppBar(Header = Header)
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(top = 54.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        contentPadding = PaddingValues(bottom = 32.dp)
-                    ) {
-                        item {
-                            TopAppBar("Создать карточку")
-                            topApptex()
-                        }
-                    }
+
+                    TopAppBar("Создать карточку")
+                    topApptex(context = context)
                 }
             }
         }
@@ -76,7 +67,7 @@ fun tso(){
 
 @Preview
 @Composable
-fun topApptex() {
+fun topApptex(context: Context) {
 
 
     val message = remember { mutableStateOf("") }
@@ -200,13 +191,23 @@ fun topApptex() {
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
+
             )
             {
+
+
+
                 Button(
-                    onClick = {},
+
+                    onClick = {
+                        val intent = Intent(context, TrainingActivity::class.java)
+
+                        context.startActivity(intent)
+                    },
                     modifier = Modifier
                         .fillMaxWidth(),
                     shape = Shapes.large
+
                 )
                 {
                     Row() {
