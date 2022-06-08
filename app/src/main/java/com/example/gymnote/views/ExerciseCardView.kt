@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -34,7 +35,7 @@ val surfacePadding = 24.dp
 var enterS: String = ""
 
 @Composable
-fun ApproacheTemplate(numOfApproache: Int, approache: Approache) {
+fun ApproacheTemplate(numOfApproache: Int, approache: Approache?) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -61,7 +62,7 @@ fun ApproacheTemplate(numOfApproache: Int, approache: Approache) {
                 value = enterS,
                 onValueChange = {},
                 readOnly = true,
-                placeholder = { Text(text = "Test") },
+                placeholder = { Text(text = approache?.weight.toString()) },
                 shape = Shapes.small,
                 modifier = Modifier
                     .width(70.dp).height(56.dp),
@@ -74,7 +75,7 @@ fun ApproacheTemplate(numOfApproache: Int, approache: Approache) {
                 textStyle = TextStyle(textIndent = TextIndent(0.sp)),
                 readOnly = true,
                 shape = Shapes.small,
-                placeholder = { Text(text = "69") },
+                placeholder = { Text(text = approache?.units.toString()) },
                 onValueChange = { enterS = it },
                 modifier = Modifier
                     .width(70.dp)
@@ -84,8 +85,9 @@ fun ApproacheTemplate(numOfApproache: Int, approache: Approache) {
 }
 
 @Composable
-fun ExerciseCard(exercise: Exercise, context: Context) { // false - время, true - повторения
+fun ExerciseCard(exercise: Exercise, exerciseIndex: Int) { // false - время, true - повторения
     var isExpanded by remember { mutableStateOf(false) }
+    val context = LocalContext.current
     Surface(
         shape = Shapes.medium,
         elevation = 16.dp,
@@ -101,7 +103,7 @@ fun ExerciseCard(exercise: Exercise, context: Context) { // false - время, 
     ) {
         Column(modifier = Modifier
             .animateContentSize()
-            .height(if (isExpanded) getCardHeight(exercise.approaches.size) else 64.dp)) {
+            .height(if (isExpanded) getCardHeight(exercise.approaches) else 64.dp)) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -142,10 +144,17 @@ fun ExerciseCard(exercise: Exercise, context: Context) { // false - время, 
                     color = Color.Gray
                 )
             }
-            if (isExpanded)
-                for (i in exercise.approaches.indices) {
-                    ApproacheTemplate(numOfApproache = i + 1, approache = exercise.approaches[i])
+            if (isExpanded && exercise.approaches != null)
+                for (i in exercise.approaches!!.indices) {
+                    ApproacheTemplate(numOfApproache = i + 1, approache = exercise.approaches!![i])
                 }
+            else {
+                Text(
+                    text = "Вы только создали данное упражнение!",
+                    modifier = Modifier.padding(top = inSurfacePadding, bottom = inSurfacePadding),
+                    fontSize = 20.sp
+                )
+            }
             Button(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -156,7 +165,7 @@ fun ExerciseCard(exercise: Exercise, context: Context) { // false - время, 
                 onClick = {
                     val intent = Intent(context, TrainingActivity::class.java)
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    intent.putExtra("exerciseName", exercise.name)
+                    intent.putExtra("exerciseIndex", exerciseIndex)
                     context.startActivity(intent)
                 }) {
                 Text(text = "Начать")
@@ -184,6 +193,9 @@ fun myFormPreview() {
     myForm(enterString = "Hello")
 }
 
-fun getCardHeight(approachCount: Int): Dp {
-    return surfacePadding / 2 * approachCount + (56 * approachCount).dp + inSurfacePadding * 2 + 50.dp + surfacePadding * 2 + BTN_HEIGHT_LONG
+fun getCardHeight(approaches: MutableList<Approache>?): Dp {
+    if(approaches != null)
+        return surfacePadding / 2 * approaches.size + (56 * approaches.size).dp + inSurfacePadding * 2 + 50.dp + surfacePadding * 2 + BTN_HEIGHT_LONG
+    else
+        return 266.dp
 }

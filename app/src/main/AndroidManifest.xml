@@ -8,7 +8,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.GymNote">
+        android:theme="@style/Theme.GymNote"
+        android:name=".ExercisesApplication">
 
         <activity
             android:name=".activities.MainActivity"
@@ -25,6 +26,14 @@
             android:name=".activities.TrainingActivity"
             android:exported="true"
             android:label="@string/app_name"
+            android:noHistory="true"
+            android:theme="@style/Theme.GymNote">
+        </activity>
+        <activity
+            android:name=".activities.CreateCardViews"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:noHistory="true"
             android:theme="@style/Theme.GymNote">
         </activity>
     </application>

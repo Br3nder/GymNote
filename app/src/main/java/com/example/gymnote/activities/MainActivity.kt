@@ -1,7 +1,9 @@
 package com.example.gymnote.activities
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
@@ -14,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -21,7 +24,12 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.room.Room
 import com.example.gymnote.*
+import com.example.gymnote.models.ExercisesViewModel
+import com.example.gymnote.room.ExerciseEntity
+import com.example.gymnote.room.ExercisesDao
+import com.example.gymnote.room.ExercisesDataBase
 import com.example.gymnote.ui.theme.GymNoteTheme
 import com.example.gymnote.ui.theme.*
 
@@ -30,10 +38,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             GymNoteTheme {
-                val context = this
+                //TODO здесь надо сделать запрос на бд, чтобы получить
+                // ответ в exercises (после просмотра паттерна repository)
                 Column() {
                     topAppBar()
-                    ExercisesList(exercises = exercises, context = context)
+                    ExercisesList(exercises = exercises)
                 }
             }
         }
@@ -75,22 +84,28 @@ fun topAppBar() {
 }
 
 @Composable
-fun ExercisesList(exercises: List<Exercise>, context: Context) {
+fun ExercisesList(exercises: MutableList<Exercise>?) {
+    val context = LocalContext.current
     LazyColumn(
         modifier = Modifier
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         contentPadding = PaddingValues(bottom = 32.dp)
     ) {
-        items(exercises) { item ->
+        var i = 0
+        items(exercises!!.toList()) { item ->
             ExerciseCard(
                 exercise = item,
-                context = context
+                exerciseIndex = i
             )
+            i++
         }
         item {
             Button(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    val intent = Intent(context, CreateCardViews::class.java)
+                    context.startActivity(intent)
+                },
                 modifier = Modifier
                     .padding(top = 32.dp)
                     .height(BTN_HEIGHT_SHORT)

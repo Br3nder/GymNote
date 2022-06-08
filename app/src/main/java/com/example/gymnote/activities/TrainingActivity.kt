@@ -15,9 +15,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,8 +36,10 @@ class TrainingActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             GymNoteTheme {
-                val exerciseName: String = intent?.extras?.getString("exerciseName").toString()
-                header(exerciseName = exerciseName, context = this)
+                val exerciseIndex = intent.extras!!.getInt("exerciseIndex")
+                var exercise = exercises[exerciseIndex] //TODO here will be db request
+                var approaches = exercise.approaches
+                header(title = exercise.name)
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
@@ -45,10 +50,12 @@ class TrainingActivity : ComponentActivity() {
                     item {
                         approachesTitle()
                     }
-                    var i = 1
-                    items(exercises[0].approaches) { item ->
-                        approach(numOfApproache = i, approache = item)
-                        i++
+                    if(exercise.approaches != null){
+                        var i = 1
+                        items(approaches!!) { item ->
+                            approach(numOfApproache = i, approache = item)
+                            i++
+                        }
                     }
                     item{
                         Row(){
@@ -71,7 +78,11 @@ class TrainingActivity : ComponentActivity() {
                                 colors = ButtonDefaults.buttonColors(SportBlue),
                                 shape = Shapes.medium,
                                 onClick = {
-                                    //TODO *click*
+                                    //TODO добавить подход в бд и обновить колонку
+                                    var newApproache = Approache(0, 0)
+                                    if(exercise.approaches == null)
+                                        exercise.approaches = mutableListOf()
+                                    exercise.approaches?.add(newApproache)
                                 }) {
                                 Icon(Icons.Rounded.Add, contentDescription = "Add approach")
                             }
@@ -84,7 +95,8 @@ class TrainingActivity : ComponentActivity() {
 }
 
 @Composable
-fun header(exerciseName: String, context: Context) {
+fun header(title: String) {
+    val context = LocalContext.current
     TopAppBar(
         contentPadding = PaddingValues(start = 20.dp),
         backgroundColor = Color.White,
@@ -99,7 +111,7 @@ fun header(exerciseName: String, context: Context) {
                 .padding(end = 8.dp)
         ) {
             Text(
-                text = exerciseName,
+                text = title,
                 fontWeight = FontWeight.Black,
                 fontSize = 26.sp,
                 color = SportBlue
@@ -142,7 +154,7 @@ fun approachesTitle() {
 }
 
 @Composable
-fun approach(numOfApproache: Int, approache: Approache) {
+fun approach(numOfApproache: Int, approache: Approache?) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -157,21 +169,24 @@ fun approach(numOfApproache: Int, approache: Approache) {
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Bold
         )
+        //TODO подумать как лучше производить сохранение записей
+        val weight = remember{ mutableStateOf(approache?.weight.toString()) }
+        val unit = remember{ mutableStateOf(approache?.units.toString())}
         OutlinedTextField(
             modifier = Modifier.width(70.dp),
-            value = approache.weight.toString(),
-            onValueChange = {})
+            value = weight.value,
+            onValueChange = {newWeight -> weight.value = newWeight})
         OutlinedTextField(
             modifier = Modifier.width(70.dp),
-            value = approache.repeats.toString(),
-            onValueChange = {})
+            value = unit.value,
+            onValueChange = {newUnit -> unit.value = newUnit})
     }
 }
 
 @Composable
 @Preview
 fun approachPreview() {
-    approach(numOfApproache = 1, approache = a1[0])
+    approach(numOfApproache = 1, approache = a1!![0])
 }
 
 fun showAlletrDialog(context: Context) {

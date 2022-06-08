@@ -1,4 +1,8 @@
 package com.example.gymnote
 
-data class Approache(val weight: Int, val repeats: Int){}
-data class Exercise(val name: String,val typeOfExercise: Boolean,val approaches: List<Approache>){}
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class Approache(val weight: Int = 0, val units: Int = 0)
+
+data class Exercise(var name: String,val typeOfExercise: Boolean,var approaches: MutableList<Approache>?)
