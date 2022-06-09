@@ -19,15 +19,10 @@ val a3: MutableList<Approache> = mutableListOf(
 
 val a4: MutableList<Approache> = mutableListOf(
     Approache(80, 12),
-    Approache(120, 10),
+    Approache(100, 10),
     Approache(15, 100),
+    Approache(16, 100),
     Approache(15, 100),
-    Approache(15, 100),
-    Approache(80, 12),
-    Approache(120, 10),
-    Approache(15, 100),
-    Approache(15, 100),
-    Approache(15, 100)
 )
 
 var e1 = Exercise(name = "Chest press", typeOfExercise = true, approaches = a1)

@@ -30,16 +30,21 @@ import com.example.gymnote.*
 import com.example.gymnote.ui.theme.GymNoteTheme
 import com.example.gymnote.ui.theme.Shapes
 import com.example.gymnote.ui.theme.SportBlue
+import kotlinx.coroutines.GlobalScope
 
 class TrainingActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             GymNoteTheme {
+
                 val exerciseIndex = intent.extras!!.getInt("exerciseIndex")
-                var exercise = exercises[exerciseIndex] //TODO here will be db request
-                var approaches = exercise.approaches
-                header(title = exercise.name)
+                val exercise = remember { mutableStateOf(exercises[exerciseIndex]) }
+
+                //                var exercise = exercises[exerciseIndex] //TODO here will be db request
+                var newExercise = exercises[exerciseIndex]
+//                var approaches = remember { mutableStateOf(exercise.approaches) }
+                header(title = exercise.value.name)
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
@@ -50,28 +55,16 @@ class TrainingActivity : ComponentActivity() {
                     item {
                         approachesTitle()
                     }
-                    if(exercise.approaches != null){
+                    if (exercise.value.approaches != null) {
                         var i = 1
-                        items(approaches!!) { item ->
+                        items(exercise.value.approaches!!) { item ->
                             approach(numOfApproache = i, approache = item)
                             i++
                         }
                     }
-                    item{
-                        Row(){
-                            Button(
-                                modifier = Modifier
-                                    .padding(top = surfacePadding, end = surfacePadding / 2)
-                                    .height(BTN_HEIGHT_LONG)
-                                    .fillMaxWidth(0.6f),
-                                colors = ButtonDefaults.buttonColors(SportBlue),
-                                shape = Shapes.medium,
-                                onClick = {
-                                    //TODO *click*
-                                }) {
-                                Text(text = "Завершить")
-                            }
-                            Button( modifier = Modifier
+                    item {
+                        Row() {
+                            Button(modifier = Modifier
                                 .padding(top = surfacePadding, start = surfacePadding / 2)
                                 .height(BTN_HEIGHT_LONG)
                                 .fillMaxWidth(0.4f),
@@ -80,9 +73,11 @@ class TrainingActivity : ComponentActivity() {
                                 onClick = {
                                     //TODO добавить подход в бд и обновить колонку
                                     var newApproache = Approache(0, 0)
-                                    if(exercise.approaches == null)
-                                        exercise.approaches = mutableListOf()
-                                    exercise.approaches?.add(newApproache)
+                                    if(newExercise.approaches == null)
+                                        newExercise.approaches = mutableListOf()
+                                    newExercise.approaches?.add(newApproache)
+                                    exercise.value = newExercise
+
                                 }) {
                                 Icon(Icons.Rounded.Add, contentDescription = "Add approach")
                             }
@@ -170,16 +165,24 @@ fun approach(numOfApproache: Int, approache: Approache?) {
             fontWeight = FontWeight.Bold
         )
         //TODO подумать как лучше производить сохранение записей
-        val weight = remember{ mutableStateOf(approache?.weight.toString()) }
-        val unit = remember{ mutableStateOf(approache?.units.toString())}
+        val weight = remember { mutableStateOf(approache?.weight.toString()) }
+        val unit = remember { mutableStateOf(approache?.units.toString()) }
         OutlinedTextField(
             modifier = Modifier.width(70.dp),
             value = weight.value,
-            onValueChange = {newWeight -> weight.value = newWeight})
+            onValueChange = { newWeight ->
+                weight.value = newWeight
+                if(weight.value != "")
+                    approache?.weight = weight.value.toInt()
+            })
         OutlinedTextField(
             modifier = Modifier.width(70.dp),
             value = unit.value,
-            onValueChange = {newUnit -> unit.value = newUnit})
+            onValueChange = { newUnit ->
+                unit.value = newUnit
+                if(unit.value != "")
+                    approache!!.units = unit.value.toInt()
+            })
     }
 }
 
@@ -218,4 +221,5 @@ fun ApproachesList(approaches: List<Approache>) {
     ) {
 
     }
+    
 }

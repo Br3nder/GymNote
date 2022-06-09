@@ -24,18 +24,27 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.lifecycleScope
 import androidx.room.Room
 import com.example.gymnote.*
 import com.example.gymnote.models.ExercisesViewModel
 import com.example.gymnote.room.ExerciseEntity
 import com.example.gymnote.room.ExercisesDao
 import com.example.gymnote.room.ExercisesDataBase
+import com.example.gymnote.room.Repository
 import com.example.gymnote.ui.theme.GymNoteTheme
 import com.example.gymnote.ui.theme.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+//        val repository = Repository(ExercisesDataBase.getDatabase(this))
+//        var exerciseList: MutableList<Exercise>? = mutableListOf()
+//        GlobalScope.launch {
+//            exerciseList = repository.getAll()
+//        }
         setContent {
             GymNoteTheme {
                 //TODO здесь надо сделать запрос на бд, чтобы получить

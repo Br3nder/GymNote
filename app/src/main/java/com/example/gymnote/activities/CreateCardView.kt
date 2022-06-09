@@ -28,8 +28,12 @@ import androidx.compose.material.OutlinedTextField
 import androidx.compose.ui.platform.LocalContext
 import com.example.gymnote.*
 import com.example.gymnote.R
+import com.example.gymnote.room.ExercisesDataBase
+import com.example.gymnote.room.Repository
 import com.example.gymnote.ui.theme.GymNoteTheme
 import com.example.gymnote.ui.theme.Shapes
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import androidx.compose.ui.graphics.Color.Companion as Color1
 
 
@@ -151,6 +155,10 @@ fun topApptex() {
                         var newExercise = Exercise(newExerciseName.value, false, null)
                         //TODO отправка изменений в бд
                         exercises.add(newExercise)
+
+//                        GlobalScope.launch {
+//                            Repository(ExercisesDataBase.getDatabase(context)).add(newExercise)
+//                        }
                         val intent = Intent(context, MainActivity::class.java)
                         context.startActivity(intent)
                     },
