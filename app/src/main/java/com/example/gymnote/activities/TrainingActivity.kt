@@ -83,11 +83,11 @@ class TrainingActivity : ComponentActivity() {
                     item {
                         Row() {
                             Button(modifier = Modifier
-                                .padding(top = surfacePadding, start = surfacePadding / 2)
-                                .height(BTN_HEIGHT_LONG)
-                                .fillMaxWidth(0.4f),
-                                colors = ButtonDefaults.buttonColors(SportBlue),
+                                .padding(top = 32.dp)
+                                .height(BTN_HEIGHT_SHORT)
+                                .width(BTN_WIDTH_SHORT),
                                 shape = Shapes.medium,
+                                colors = ButtonDefaults.buttonColors(SportBlue),
                                 onClick = {
                                     //TODO добавить подход в бд и обновить колонку
                                     var newApproache = Approache(0, 0)

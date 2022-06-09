@@ -26,16 +26,17 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import com.example.gymnote.*
 import com.example.gymnote.R
 import com.example.gymnote.room.ExercisesDataBase
 import com.example.gymnote.room.Repository
 import com.example.gymnote.ui.theme.GymNoteTheme
 import com.example.gymnote.ui.theme.Shapes
+import com.example.gymnote.ui.theme.SportBlue
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import androidx.compose.ui.graphics.Color.Companion as Color1
-
 
 
 class CreateCardViews : ComponentActivity() {
@@ -56,7 +57,7 @@ class CreateCardViews : ComponentActivity() {
 
 @Preview
 @Composable
-fun tso(){
+fun tso() {
     header("Создать карточку")
 }
 
@@ -65,125 +66,97 @@ fun topApptex() {
     val context = LocalContext.current
     val newExerciseName = remember { mutableStateOf("") }
     val tag = remember { mutableStateOf("") }
-    Surface(
-        shape = MaterialTheme.shapes.medium,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(
-                start = surfacePadding,
-                end = surfacePadding,
-                top = surfacePadding / 2,
-                bottom = surfacePadding / 2
-            )
-            .background(color = Color1.White)
+
+    Column(
+        modifier = Modifier.padding(inSurfacePadding)
     ) {
-        Column(
-            modifier = Modifier.padding(inSurfacePadding)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        start = surfacePadding,
-                        end = surfacePadding - 3.dp,
-                        top = surfacePadding / 2,
-                        bottom = 10.dp
-                    ),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {}
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 10.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                OutlinedTextField(
-                    newExerciseName.value,
-                    onValueChange = { newExerciseName.value = it },
-                    label = { Text("Название упражнения") },
-                    shape = Shapes.large
-                )
+            OutlinedTextField(
+                newExerciseName.value,
+                onValueChange = { newExerciseName.value = it },
+                label = { Text("Название упражнения") },
+                shape = Shapes.medium
+            )
 
 
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 10.dp),
+            verticalAlignment = Alignment.Top,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            OutlinedTextField(
+                tag.value,
+                onValueChange = { tag.value = it },
+                label = { Text("#хэштег") },
+                shape = Shapes.medium
+            )
+        }
+        Row(
+
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp, bottom = inSurfacePadding, start = 25.dp, end = 25.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text("Режим", color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            val lock = remember {
+                mutableStateOf(false)
             }
-            Row(
+
+            Switch(
+                checked = lock.value,
+                onCheckedChange = { lock.value = it },
+                colors = SwitchDefaults.colors(SportBlue)
+            )
+
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        )
+        {
+            Button(
+                onClick = {
+                    var newExercise = Exercise(newExerciseName.value, false, null)
+                    GlobalScope.launch {
+                        Repository(ExercisesDataBase.getDatabase(context)).add(newExercise)
+                    }
+                    val intent = Intent(context, MainActivity::class.java)
+                    context.startActivity(intent)
+                },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 10.dp),
-                verticalAlignment = Alignment.Top,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                OutlinedTextField(
-                    tag.value,
-                    onValueChange = { tag.value = it },
-                    label = { Text("#хэштег") },
-                    shape = Shapes.large
-                )
-            }
-            Row(
-
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 10.dp, start = 25.dp, end = 25.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text("Режим", color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 16.sp )
-                val lock = remember {
-                    mutableStateOf(false)
-                }
-
-                Switch(
-                    checked = lock.value,
-                    onCheckedChange = { lock.value = it },
-                    colors = SwitchDefaults.colors(Color.Cyan)
-                )
-
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 10.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
+                    .height(BTN_HEIGHT_LONG),
+                shape = Shapes.medium
             )
             {
-                Button(
-                    onClick = {
-                        var newExercise = Exercise(newExerciseName.value, false, null)
-                        GlobalScope.launch {
-                            Repository(ExercisesDataBase.getDatabase(context)).add(newExercise)
-                        }
-                        val intent = Intent(context, MainActivity::class.java)
-                        context.startActivity(intent)
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    shape = Shapes.medium
-                )
-                {
-                    Row() {
-
-                        Image(
-                            painter = painterResource(id = R.drawable.bok),
-
-                            contentDescription = null,
-                            contentScale = ContentScale.Fit,
-                            modifier = Modifier
-
-                                .size(30.dp)
-                                .padding(end = 5.dp, top = 8.dp)
-                        )
-                        Text("Создать", fontSize = 26.sp)
-                    }
-
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "Создать"
+                    )
                 }
 
-
             }
+
+
         }
     }
+
 
 }
