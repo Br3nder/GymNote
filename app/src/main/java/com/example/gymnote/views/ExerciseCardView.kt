@@ -151,8 +151,11 @@ fun ExerciseCard(exercise: Exercise, exerciseIndex: Int) { // false - время
             else {
                 Text(
                     text = "Вы только создали данное упражнение!",
-                    modifier = Modifier.padding(top = inSurfacePadding, bottom = inSurfacePadding),
-                    fontSize = 20.sp
+                    modifier = Modifier.padding(start = inSurfacePadding - 18.dp,top = inSurfacePadding, bottom = inSurfacePadding),
+                    fontSize = 20.sp,
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Gray
                 )
             }
             Button(

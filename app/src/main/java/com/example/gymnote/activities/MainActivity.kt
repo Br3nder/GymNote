@@ -40,18 +40,18 @@ import kotlinx.coroutines.launch
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        val repository = Repository(ExercisesDataBase.getDatabase(this))
-//        var exerciseList: MutableList<Exercise>? = mutableListOf()
-//        GlobalScope.launch {
-//            exerciseList = repository.getAll()
-//        }
+        val repository = Repository(ExercisesDataBase.getDatabase(this))
+        var exerciseList: MutableList<Exercise>? = mutableListOf()
+        GlobalScope.launch {
+            exerciseList = repository.getAll()
+        }
         setContent {
             GymNoteTheme {
                 //TODO здесь надо сделать запрос на бд, чтобы получить
                 // ответ в exercises (после просмотра паттерна repository)
                 Column() {
                     topAppBar()
-                    ExercisesList(exercises = exercises)
+                    ExercisesList(exercises = exerciseList)
                 }
             }
         }

@@ -12,7 +12,16 @@ class Repository(val exercisesDataBase: ExercisesDataBase) {
         return exercises
     }
 
+    suspend fun getAllEntityes(): MutableList<ExerciseEntity>? {
+        return exercisesDataBase.getExerciseDao().getAll()
+    }
+
     suspend fun add(exercise: Exercise){
         exercisesDataBase.getExerciseDao().add(ExerciseEntity.fromExercise(exercise))
     }
+
+    suspend fun update(exerciseEntity: ExerciseEntity){
+        exercisesDataBase.getExerciseDao().update(exerciseEntity)
+    }
+
 }

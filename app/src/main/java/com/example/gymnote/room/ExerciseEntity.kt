@@ -13,7 +13,7 @@ class ExerciseEntity (
     @PrimaryKey(autoGenerate = true) val id: Int,
     @ColumnInfo(collate = ColumnInfo.NOCASE) val name: String, //не чувствителен к регистру
     val type: Boolean,
-    val approaches: MutableList<Approache>?){
+    var approaches: MutableList<Approache>?){
 
     fun toExercise(): Exercise = Exercise(
         name = name,

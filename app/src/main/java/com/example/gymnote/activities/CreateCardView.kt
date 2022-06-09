@@ -153,18 +153,15 @@ fun topApptex() {
                 Button(
                     onClick = {
                         var newExercise = Exercise(newExerciseName.value, false, null)
-                        //TODO отправка изменений в бд
-                        exercises.add(newExercise)
-
-//                        GlobalScope.launch {
-//                            Repository(ExercisesDataBase.getDatabase(context)).add(newExercise)
-//                        }
+                        GlobalScope.launch {
+                            Repository(ExercisesDataBase.getDatabase(context)).add(newExercise)
+                        }
                         val intent = Intent(context, MainActivity::class.java)
                         context.startActivity(intent)
                     },
                     modifier = Modifier
                         .fillMaxWidth(),
-                    shape = Shapes.large
+                    shape = Shapes.medium
                 )
                 {
                     Row() {

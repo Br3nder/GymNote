@@ -27,24 +27,37 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.gymnote.*
+import com.example.gymnote.room.ExerciseEntity
+import com.example.gymnote.room.ExercisesDataBase
+import com.example.gymnote.room.Repository
 import com.example.gymnote.ui.theme.GymNoteTheme
 import com.example.gymnote.ui.theme.Shapes
 import com.example.gymnote.ui.theme.SportBlue
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class TrainingActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val repository = Repository(ExercisesDataBase.getDatabase(this))
+        var exerciseList: MutableList<Exercise>? = mutableListOf()
+        var exercise: ExerciseEntity? = null
+        val exerciseIndex = intent.extras!!.getInt("exerciseIndex")
+        GlobalScope.launch {
+            exerciseList = repository.getAll()
+            exercise = repository.getAllEntityes()!![exerciseIndex]
+        }
         setContent {
             GymNoteTheme {
 
-                val exerciseIndex = intent.extras!!.getInt("exerciseIndex")
-                val exercise = remember { mutableStateOf(exercises[exerciseIndex]) }
+
+//                val exercise = remember { mutableStateOf(exerciseList[exerciseIndex]) }
+                val exercise = exerciseList!![exerciseIndex]
 
                 //                var exercise = exercises[exerciseIndex] //TODO here will be db request
-                var newExercise = exercises[exerciseIndex]
+
 //                var approaches = remember { mutableStateOf(exercise.approaches) }
-                header(title = exercise.value.name)
+                header(title = exercise.name)
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
@@ -55,10 +68,15 @@ class TrainingActivity : ComponentActivity() {
                     item {
                         approachesTitle()
                     }
-                    if (exercise.value.approaches != null) {
+                    if (exercise.approaches != null) {
                         var i = 1
-                        items(exercise.value.approaches!!) { item ->
-                            approach(numOfApproache = i, approache = item)
+                        items(exercise.approaches!!) { item ->
+                            approach(
+                                numOfApproache = i,
+                                approache = item,
+                                exerciseIndex = exerciseIndex,
+                                repository = repository
+                            )
                             i++
                         }
                     }
@@ -73,11 +91,15 @@ class TrainingActivity : ComponentActivity() {
                                 onClick = {
                                     //TODO добавить подход в бд и обновить колонку
                                     var newApproache = Approache(0, 0)
-                                    if(newExercise.approaches == null)
-                                        newExercise.approaches = mutableListOf()
-                                    newExercise.approaches?.add(newApproache)
-                                    exercise.value = newExercise
 
+                                    GlobalScope.launch {
+                                        var updateExerciseEntity =
+                                            repository.getAllEntityes()!![exerciseIndex]
+                                        if (updateExerciseEntity.approaches == null)
+                                            updateExerciseEntity.approaches = mutableListOf()
+                                        updateExerciseEntity.approaches?.add(newApproache)
+                                        repository.update(updateExerciseEntity)
+                                    }
                                 }) {
                                 Icon(Icons.Rounded.Add, contentDescription = "Add approach")
                             }
@@ -149,7 +171,13 @@ fun approachesTitle() {
 }
 
 @Composable
-fun approach(numOfApproache: Int, approache: Approache?) {
+fun approach(
+    numOfApproache: Int,
+    approache: Approache?,
+    exerciseIndex: Int,
+    repository: Repository
+) {
+    val context = LocalContext.current
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -172,24 +200,32 @@ fun approach(numOfApproache: Int, approache: Approache?) {
             value = weight.value,
             onValueChange = { newWeight ->
                 weight.value = newWeight
-                if(weight.value != "")
-                    approache?.weight = weight.value.toInt()
+                if (weight.value != "") {
+                    GlobalScope.launch {
+                        var updateExercise = repository.getAllEntityes()!![exerciseIndex]
+                        updateExercise.approaches!![numOfApproache - 1].weight =
+                            weight.value.toInt()
+                        repository.update(updateExercise)
+                    }
+                    //approache?.weight = weight.value.toInt()
+                }
+
             })
         OutlinedTextField(
             modifier = Modifier.width(70.dp),
             value = unit.value,
             onValueChange = { newUnit ->
                 unit.value = newUnit
-                if(unit.value != "")
-                    approache!!.units = unit.value.toInt()
+                if (unit.value != "") {
+                    GlobalScope.launch {
+                        var updateExercise = repository.getAllEntityes()!![exerciseIndex]
+                        updateExercise.approaches!![numOfApproache - 1].units = unit.value.toInt()
+                        repository.update(updateExercise)
+                    }
+                    //approache!!.units = unit.value.toInt()
+                }
             })
     }
-}
-
-@Composable
-@Preview
-fun approachPreview() {
-    approach(numOfApproache = 1, approache = a1!![0])
 }
 
 fun showAlletrDialog(context: Context) {
@@ -221,5 +257,5 @@ fun ApproachesList(approaches: List<Approache>) {
     ) {
 
     }
-    
+
 }

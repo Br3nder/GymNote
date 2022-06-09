@@ -9,12 +9,16 @@ import kotlinx.serialization.json.Json
 class ApproachesConverter {
 
     @TypeConverter
-    open fun fromApproaches(approaches: MutableList<Approache>?): String? {
+    open fun fromApproaches(approaches: MutableList<Approache>?): String {
+        if(approaches == null)
+            return ""
         return Json.encodeToString(approaches)
     }
 
     @TypeConverter
     open fun toApproaches(string: String?): MutableList<Approache>?{
+        if(string == "")
+            return null
         return Json.decodeFromString<MutableList<Approache>>(string!!)
     }
 }
